@@ -1,13 +1,25 @@
-import { useSelector } from 'react-redux'
+import { useEffect, useState } from "react";
+import CatalogItem from "./CatalogItem";
+import { IProduct } from "../store/modules/cart/types";
+import api from "../services/api";
 
 const Catalog = () => {
-  // Para acessar o contexto geral deve-se ultilizar o useSelector
-  const catalog = useSelector(state => state)
+  const [catalog, setCatalog] = useState<IProduct[]>([]);
 
-  console.log(catalog)
+  useEffect(() => {
+    api.get('products').then(response => {
+      setCatalog(response.data)
+    })
+  }, [])
 
   return (
-    <h1>Catalog</h1>
+    <main>
+      <h1>Catalog</h1>
+
+      {catalog.map(product => (
+        <CatalogItem key={product.id} product={product} />
+      ))}
+    </main>
   )
 }
 
